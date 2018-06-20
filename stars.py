@@ -3,7 +3,7 @@ from random import randint
 from math import sqrt
 
 class Star:
-    def __init(size, position):
+    def __init__(self, size, position):
         self.size = size
         self.position = position
 
@@ -31,7 +31,7 @@ def generate_stars(space_size, avg_groups=10, groups_sigma=3, avg_group_size=10,
                 new_x_pos = randround(group_center[0], position_sigma)
                 new_y_pos = randround(group_center[1], position_sigma)
                 new_pos = (new_x_pos, new_y_pos)
-                new_star = Star(randint(0, 1), new_pos, 1)
+                new_star = Star(randint(0, 1), new_pos)
                 found_star = True
 
                 # Make sure no collisions happen
