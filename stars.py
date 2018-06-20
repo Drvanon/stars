@@ -2,7 +2,10 @@ import pygame, sys, collections, itertools as it
 from random import randint
 from math import sqrt
 
-Star = collections.namedtuple('Star', ['size', 'position', 'mass'])
+class Star:
+    def __init(size, position):
+        self.size = size
+        self.position = position
 
 def randround(around, sigma):
     return randint(around - sigma, around + sigma)
