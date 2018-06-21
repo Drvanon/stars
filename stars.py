@@ -1,11 +1,12 @@
 import pygame, sys, collections, itertools as it
-from random import randint
+from random import randint, choice
 from math import sqrt
 
 class Star:
     def __init__(self, size, position):
         self.size = size
         self.position = position
+        self.mass = choice([0, 1])
 
 def randround(around, sigma):
     return randint(around - sigma, around + sigma)
