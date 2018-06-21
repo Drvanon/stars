@@ -50,6 +50,7 @@ def main_loop(screen, images, sim, screen_size):
 
     while running:
         screen.fill((10, 10, 10))
+        sim.tick()
         sim.draw_stars(images, screen, offset=camera_position)
 
         if movement == 'left':
