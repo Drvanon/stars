@@ -45,7 +45,7 @@ def main_loop(screen, images, sim, screen_size):
     running = True
 
     camera_position = [0, 0]
-    cam_speed = 1
+    cam_speed = sim.settings.get('camera_speed', 1)
     movement = None
 
     while running:

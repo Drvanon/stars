@@ -1,4 +1,4 @@
-camera_speed: 5
+camera_speed: 1
 space_size: [700, 500]
 stars: # Required
     avg_groups: 10
