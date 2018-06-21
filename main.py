@@ -1,19 +1,10 @@
 import pygame, itertools as it, sys
 from stars import generate_stars
+from sim import Simulation
 
 def cleanAndExit():
     pygame.quit()
     sys.exit()
-
-def draw_stars(images, stars, surface, offset=(0, 0)):
-    for star in stars:
-        if star.mass == 1:
-            surface.blit(images['star0'],
-                (star.position[0] - offset[0], star.position[1] - offset[1]))
-        if star.mass == 0:
-            surface.blit(images['star0yellow'],
-                (star.position[0] - offset[0], star.position[1] - offset[1]))
-
 
 def init_screen(screen_size):
     pygame.init()
@@ -45,12 +36,12 @@ def init(screen_size):
 
     images['star0yellow'] = colored_copy(images['star0'], (0, 255, 255, 0))
 
-    stars = generate_stars(screen_size)
-    draw_stars(images, stars, screen)
+    sim = Simulation()
+    sim.draw_stars(images, screen)
 
-    return screen, images, stars
+    return screen, images, sim
 
-def main_loop(screen, images, stars, screen_size):
+def main_loop(screen, images, sim, screen_size):
     running = True
 
     camera_position = [0, 0]
@@ -59,7 +50,7 @@ def main_loop(screen, images, stars, screen_size):
 
     while running:
         screen.fill((10, 10, 10))
-        draw_stars(images, stars, screen, offset=camera_position)
+        sim.draw_stars(images, screen, offset=camera_position)
 
         if movement == 'left':
             camera_position[0] -= cam_speed

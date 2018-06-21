@@ -14,7 +14,7 @@ def randround(around, sigma):
 def distance(pos1, pos2):
     return sqrt((pos1[0] - pos2[0])**2 + (pos1[1]-pos2[1])**2)
 
-def generate_stars(space_size, avg_groups=10, groups_sigma=3, avg_group_size=10, group_size_sigma=3, position_sigma=50):
+def generate_stars(space_size, avg_groups, groups_sigma, avg_group_size, group_size_sigma, position_sigma):
     stars = []
     groups = []
 

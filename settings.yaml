@@ -1,0 +1,10 @@
+camera_speed: 5
+space_size: [700, 500]
+start_time: 0
+stars:
+    avg_groups: 10
+    groups_sigma: 3
+    avg_group_size: 10
+    group_size_sigma: 3
+    position_sigma: 50
+
