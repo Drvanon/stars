@@ -1,4 +1,5 @@
-import yaml, stars
+import yaml, stars, nebulas, pygame
+from helper_functions import constrain_position
 
 class Simulation:
     def __init__(self, settings_file='settings.yaml'):
@@ -10,6 +11,11 @@ class Simulation:
         self.time = self.settings['sim']['time'].get('start', 0)
 
         self.generate_stars()
+        self.generate_nebulas()
+
+        self.surf = pygame.Surface(self.settings['space_size'])
+        self.surf.set_colorkey((0,0,0))
+
 
     def generate_stars(self):
         print('Generating stars')
@@ -22,7 +28,10 @@ class Simulation:
             self.settings.get("position_sigma", 50)
             )
 
-    def draw_stars(self, images, surface, offset=(0, 0)):
+    def generate_nebulas(self):
+        self.nebulas = []
+
+    def draw_stars(self, images, surface, offset):
         for star in self.stars:
             if star.mass == 1:
                 surface.blit(images['star0'],
@@ -30,6 +39,30 @@ class Simulation:
             if star.mass == 0:
                 surface.blit(images['star0yellow'],
                     (star.position[0] - offset[0], star.position[1] - offset[1]))
+
+    def draw_nebulas(self, surface, offset):
+        for nebula in self.nebulas:
+            pass
+
+    def draw(self, images):
+        center_offset = (
+                -self.settings['space_size'][0]/2,
+                -self.settings['space_size'][1]/2
+            )
+        self.draw_stars(images, self.surf, center_offset)
+        self.draw_nebulas(self.surf, center_offset)
+
+    def draw_on(self, surface, offset=(0,0)):
+        offset = constrain_position(
+                offset, (0, 0),
+                (
+                    self.surf.get_width() - surface.get_width(),
+                    self.surf.get_height() - surface.get_height())
+                )
+        new_surf = self.surf.subsurface(offset, (surface.get_width(), surface.get_height()))
+        surface.blit(new_surf, (0,0))
+        print(offset)
+        return offset
 
     def tick(self):
         self.time += self.settings['sim']['time'].get('time_increment', 1)

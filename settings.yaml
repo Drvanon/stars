@@ -1,11 +1,17 @@
 camera_speed: 1
-space_size: [700, 500]
+space_size: [1400, 1000]
 stars: # Required
     avg_groups: 10
     groups_sigma: 3
     avg_group_size: 10
     group_size_sigma: 3
     position_sigma: 50
+nebulas: # Required
+    avg_nebula_centers: 10
+    centers_sigma: 5
+    cloud_dispersion: 20
+    avg_center_radius: 10,
+    center_radius_sigma: 5
 sim: # Required
     time: # Required
         start: 0

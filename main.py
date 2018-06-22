@@ -1,97 +1,101 @@
 import pygame, itertools as it, sys
-from stars import generate_stars
 from sim import Simulation
 
-def cleanAndExit():
-    pygame.quit()
-    sys.exit()
+class App:
+    def __init__(self, screen_size=(700,500)):
+        self.screen_size = screen_size
+        self.init_images()
+        self.init_screen()
 
-def init_screen(screen_size):
-    pygame.init()
-    logo = pygame.image.load("img/logo.png")
-    pygame.display.set_icon(logo)
-    pygame.display.set_caption("Stars")
+        self.sim = Simulation()
+        self.sim.draw(self.images)
 
-    screen = pygame.display.set_mode(screen_size)
+        self.main_loop()
 
-    screen.fill((10,10,10))
-    return screen
+        self.cleanAndExit()
 
-def colored_copy(surface, new_color):
-    '''This replaces only the white color. For usage in star coloring.'''
-    newsurf = surface.copy()
-    newarr = pygame.PixelArray(newsurf)
-    newarr.replace((255, 255, 255), new_color, weights=(1,1,1))
-    del newarr
-    return newsurf
+    def init_images(self):
+        print('Loading images...')
+        self.images = {}
+        self.images['star0'] = pygame.image.load('img/star0.png')
+        self.images['star0'].set_colorkey((0,0,0))
+        self.images['star1'] = pygame.image.load('img/star0.png')
+        self.images['star1'].set_colorkey((0,0,0))
 
-def init(screen_size):
-    screen = init_screen(screen_size)
+        self.images['star0yellow'] = self.colored_copy(self.images['star0'], (0, 255, 255, 0))
 
-    images = {}
-    images['star0'] = pygame.image.load('img/star0.png')
-    images['star0'].set_colorkey((0,0,0))
-    images['star1'] = pygame.image.load('img/star0.png')
-    images['star1'].set_colorkey((0,0,0))
+    def init_screen(self):
+        pygame.init()
+        logo = pygame.image.load("img/logo.png")
+        pygame.display.set_icon(logo)
+        pygame.display.set_caption("Stars")
 
-    images['star0yellow'] = colored_copy(images['star0'], (0, 255, 255, 0))
+        self.screen = pygame.display.set_mode(self.screen_size)
 
-    sim = Simulation()
-    sim.draw_stars(images, screen)
+        self.screen.fill((10,10,10))
 
-    return screen, images, sim
+    def colored_copy(self, surface, new_color):
+        '''This replaces only the white color. For usage in star coloring.'''
+        newsurf = surface.copy()
+        newarr = pygame.PixelArray(newsurf)
+        newarr.replace((255, 255, 255), new_color, weights=(1,1,1))
+        del newarr
+        return newsurf
 
-def main_loop(screen, images, sim, screen_size):
-    running = True
+    def main_loop(self):
+        running = True
 
-    camera_position = [0, 0]
-    cam_speed = sim.settings.get('camera_speed', 1)
-    movement = None
+        space_size = self.sim.settings['space_size']
 
-    while running:
-        screen.fill((10, 10, 10))
-        sim.tick()
-        sim.draw_stars(images, screen, offset=camera_position)
+        camera_position = [space_size[0]/2, space_size[1]/2]
+        cam_speed = self.sim.settings.get('camera_speed', 1)
+        movement = None
 
-        if movement == 'left':
-            camera_position[0] -= cam_speed
-        if movement == 'right':
-            camera_position[0] += cam_speed
-        if movement == 'up':
-            camera_position[1] -= cam_speed
-        if movement == 'down':
-            camera_position[1] += cam_speed
+        while running:
+            self.screen.fill((10, 10, 10))
+            self.sim.tick()
+            camera_position = list(self.sim.draw_on(self.screen, offset=camera_position))
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+            if movement == 'left':
+                camera_position[0] -= cam_speed
+            if movement == 'right':
+                camera_position[0] += cam_speed
+            if movement == 'up':
+                camera_position[1] -= cam_speed
+            if movement == 'down':
+                camera_position[1] += cam_speed
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     running = False
-                if event.key == pygame.K_a:
-                    movement = 'left'
-                if event.key == pygame.K_s:
-                    movement = 'down'
-                if event.key == pygame.K_d:
-                    movement = 'right'
-                if event.key == pygame.K_w:
-                    movement = 'up'
-                if event.key == pygame.K_r:
-                    stars = generate_stars(screen_size)
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_w or \
-                    event.key == pygame.K_d or event.key == pygame.K_s:
-                        movement = None
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    if event.key == pygame.K_a:
+                        movement = 'left'
+                    if event.key == pygame.K_s:
+                        movement = 'down'
+                    if event.key == pygame.K_d:
+                        movement = 'right'
+                    if event.key == pygame.K_w:
+                        movement = 'up'
+                    if event.key == pygame.K_r:
+                        self.sim.generate_stars()
+                        self.sim.draw(self.images)
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_a or event.key == pygame.K_w or \
+                        event.key == pygame.K_d or event.key == pygame.K_s:
+                            movement = None
 
-        pygame.display.flip()
+            pygame.display.flip()
 
+    def draw_position(self, surface, position):
+        indicator = 'x: {}, y: {}'.format(*position)
 
-def main(screen_size=(700,500)):
-    screen, images, stars = init(screen_size)
+    def cleanAndExit(self):
+        pygame.quit()
+        sys.exit()
 
-    main_loop(screen, images, stars, screen_size)
-
-    cleanAndExit()
 
 if __name__=="__main__":
-    main()
+    app = App()

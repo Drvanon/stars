@@ -1,5 +1,6 @@
 from random import randint, choice
 from math import sqrt
+import itertools as it
 from helper_functions import distance, randround
 
 class Star:
