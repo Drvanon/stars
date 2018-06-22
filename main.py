@@ -2,7 +2,9 @@ import pygame, itertools as it, sys
 from sim import Simulation
 
 class App:
-    def __init__(self, screen_size=(700,500)):
+    def __init__(self):
+        self.sim = Simulation()
+
         print('Initializing pygame...')
         pygame.init()
 
@@ -11,11 +13,10 @@ class App:
             "small font": pygame.font.Font(None, 25)
             }
 
-        self.screen_size = screen_size
+        self.screen_size = self.sim.settings['screen_size']
         self.init_images()
         self.init_screen()
 
-        self.sim = Simulation()
         self.sim.draw(self.images)
 
         self.main_loop()
@@ -93,6 +94,7 @@ class App:
                         movement = 'up'
                     if event.key == pygame.K_r:
                         self.sim.generate_stars()
+                        self.sim.generate_nebulas()
                         self.sim.draw(self.images)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_a or event.key == pygame.K_w or \

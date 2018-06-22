@@ -46,13 +46,6 @@ def generate_stars(space_size, avg_groups, groups_sigma, avg_group_size, group_s
         groups.append(group)
 
     stars += it.chain.from_iterable(groups) # Flatten groups
-    with open('stars_cache.csv', 'w') as outf:
-        import csv
-        writer = csv.writer(outf)
-        writer.writerow(['x', 'y', 'group'])
-        for i, group in enumerate(groups):
-            for star in group:
-                writer.writerow([star.position[0], star.position[1], group_centers[i]])
 
     print('Generated {} stars in {} groups'.format(len(stars), len(groups)))
     return stars

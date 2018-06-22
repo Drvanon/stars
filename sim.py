@@ -1,4 +1,7 @@
-import yaml, stars, nebulas, pygame
+import yaml
+from nebulas import Nebula, generate_nebulas
+from stars import Star, generate_stars
+import pygame
 from helper_functions import constrain_position
 
 class Simulation:
@@ -19,7 +22,8 @@ class Simulation:
 
     def generate_stars(self):
         print('Generating stars')
-        self.stars = stars.generate_stars(
+        self.stars = []
+        self.stars = generate_stars(
             self.settings.get("space_size", (700, 500)),
             self.settings.get("avg_groups", 10),
             self.settings.get("groups_sigma", 3),
@@ -29,7 +33,11 @@ class Simulation:
             )
 
     def generate_nebulas(self):
-        self.nebulas = []
+        self.nebulas = generate_nebulas(
+                self,
+                self.settings['nebulas'].get('avg_nebulas'),
+                self.settings['nebulas'].get('sigma_nebulas')
+                )
 
     def draw_stars(self, images, surface, offset):
         for star in self.stars:
@@ -40,9 +48,9 @@ class Simulation:
                 surface.blit(images['star0yellow'],
                     (star.position[0] - offset[0], star.position[1] - offset[1]))
 
-    def draw_nebulas(self, surface, offset):
+    def draw_nebulas(self, offset):
         for nebula in self.nebulas:
-            pass
+            self.surf.blit(nebula.surface, nebula.top_left)
 
     def draw(self, images):
         center_offset = (
@@ -50,7 +58,7 @@ class Simulation:
                 -self.settings['space_size'][1]/2
             )
         self.draw_stars(images, self.surf, (0, 0))
-        self.draw_nebulas(self.surf, center_offset)
+        self.draw_nebulas(center_offset)
 
     def draw_on(self, surface, offset=(0,0)):
         offset = constrain_position(
