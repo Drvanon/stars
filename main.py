@@ -3,6 +3,14 @@ from sim import Simulation
 
 class App:
     def __init__(self, screen_size=(700,500)):
+        print('Initializing pygame...')
+        pygame.init()
+
+        print('Setting fonts...')
+        self.fonts = {
+            "small font": pygame.font.Font(None, 25)
+            }
+
         self.screen_size = screen_size
         self.init_images()
         self.init_screen()
@@ -25,7 +33,6 @@ class App:
         self.images['star0yellow'] = self.colored_copy(self.images['star0'], (0, 255, 255, 0))
 
     def init_screen(self):
-        pygame.init()
         logo = pygame.image.load("img/logo.png")
         pygame.display.set_icon(logo)
         pygame.display.set_caption("Stars")
@@ -47,7 +54,10 @@ class App:
 
         space_size = self.sim.settings['space_size']
 
-        camera_position = [space_size[0]/2, space_size[1]/2]
+        camera_position = [
+                space_size[0]/2 - self.screen_size[0]/2,
+                space_size[1]/2 - self.screen_size[0]/2
+                ]
         cam_speed = self.sim.settings.get('camera_speed', 1)
         movement = None
 
@@ -55,6 +65,8 @@ class App:
             self.screen.fill((10, 10, 10))
             self.sim.tick()
             camera_position = list(self.sim.draw_on(self.screen, offset=camera_position))
+
+            self.draw_position(self.screen, camera_position)
 
             if movement == 'left':
                 camera_position[0] -= cam_speed
@@ -91,11 +103,15 @@ class App:
 
     def draw_position(self, surface, position):
         indicator = 'x: {}, y: {}'.format(*position)
+        text_surf = self.fonts['small font'].render(
+                indicator, True, (0, 0, 0),
+                (240, 240, 240, 0.5)
+                )
+        surface.blit(text_surf, (0, 0))
 
     def cleanAndExit(self):
         pygame.quit()
         sys.exit()
-
 
 if __name__=="__main__":
     app = App()

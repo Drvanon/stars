@@ -49,7 +49,7 @@ class Simulation:
                 -self.settings['space_size'][0]/2,
                 -self.settings['space_size'][1]/2
             )
-        self.draw_stars(images, self.surf, center_offset)
+        self.draw_stars(images, self.surf, (0, 0))
         self.draw_nebulas(self.surf, center_offset)
 
     def draw_on(self, surface, offset=(0,0)):
@@ -61,7 +61,6 @@ class Simulation:
                 )
         new_surf = self.surf.subsurface(offset, (surface.get_width(), surface.get_height()))
         surface.blit(new_surf, (0,0))
-        print(offset)
         return offset
 
     def tick(self):
