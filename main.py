@@ -1,5 +1,7 @@
 import pygame, itertools as it, sys
 from sim import Simulation
+import numpy as np
+from settings import settings
 
 class App:
     def __init__(self):
@@ -13,7 +15,7 @@ class App:
             "small font": pygame.font.Font(None, 25)
             }
 
-        self.screen_size = self.sim.settings['screen_size']
+        self.screen_size = settings['screen_size']
         self.init_images()
         self.init_screen()
 
@@ -53,13 +55,13 @@ class App:
     def main_loop(self):
         running = True
 
-        space_size = self.sim.settings['space_size']
+        space_size = settings['space_size']
 
         camera_position = [
                 space_size[0]/2 - self.screen_size[0]/2,
                 space_size[1]/2 - self.screen_size[0]/2
                 ]
-        cam_speed = self.sim.settings.get('camera_speed', 1)
+        cam_speed = settings.get('camera_speed', 1)
         movement = None
 
         while running:
@@ -67,7 +69,7 @@ class App:
             self.sim.tick()
             camera_position = list(self.sim.draw_on(self.screen, offset=camera_position))
 
-            self.draw_position(self.screen, camera_position)
+            self.draw_position(self.screen, np.array(pygame.mouse.get_pos())+ np.array(camera_position))
 
             if movement == 'left':
                 camera_position[0] -= cam_speed
